@@ -10,6 +10,7 @@ node('docker-slave') {
   stage('Static Code Analysis'){
    withSonarQubeEnv(installationName: 'Sonarqube'){
       sh 'mvn clean verify sonar:sonar -Dsonar.projectName=example-project -Dsonar.projectKey=example-project -Dsonar.projectVersion=$BUILD_NUMBER';
+   }
   }
   stage ('Integration Test'){
     sh 'mvn clean verify -Dsurefire.skip=true';
