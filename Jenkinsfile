@@ -30,8 +30,8 @@ node('docker-slave') {
    }"""
    server.upload(uploadSpec)
  }
- stash i
-   ncludes: 'target/hello-0.0.1.war,src/pt/Hello_World_Test_Plan.jmx',
+ stash 
+   includes: 'target/hello-0.0.1.war,src/pt/Hello_World_Test_Plan.jmx',
    name: 'binary'
 }
 
