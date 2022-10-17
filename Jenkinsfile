@@ -14,8 +14,8 @@ node('docker-slave') {
   }
   stage ('Integration Test'){
     sh 'mvn clean verify -Dsurefire.skip=true';
+    step([$class: 'JUnitResultArchiver', testResults: '**/target/failsafe-reports/TEST-*.xml', healthScaleFactor: 1.0])
     junit '**/target/failsafe-reports/TEST-*.xml'
-    archive 'target/*.jar'
  }
  stage ('Publish'){
    def server = Artifactory.server 'Default Artifactory Server'
@@ -43,7 +43,7 @@ node('docker_pt') {
  }
  stage ('Performance Testing'){
     sh '''cd /opt/jmeter/bin/ && ./jmeter.sh -n -t $WORKSPACE/src/pt/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
-    sh "ls $WORKSPACE"
+    /*sh "ls $WORKSPACE"*/
     step([$class: 'ArtifactArchiver', artifacts: '**/*.jtl'])
   }
  stage ('Promote build in Artifactory'){
