@@ -4,8 +4,8 @@ node('docker-slave') {
  }
  stage('Build & Unit test'){
     sh 'mvn clean verify -DskipITs=true';
+    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml', healthScaleFactor: 1.0])
     junit '**/target/surefire-reports/TEST-*.xml'
-    archiveArtifacts(artifacts: '**/*.jar', followSymlinks: false)
  }
   stage('Static Code Analysis'){
    withSonarQubeEnv(installationName: 'Sonarqube'){
