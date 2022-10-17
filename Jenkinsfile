@@ -44,7 +44,7 @@ node('docker_pt') {
  stage ('Performance Testing'){
    unstash 'binary'
    sh 'cp src/pt/Hello_World_Test_Plan.jmx $WORKSPACE/';
-   sh '''cd /opt/jmeter/bin/ ./jmeter.sh -n -t $WORKSPACE/src/pt/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
+   sh '''cd /opt/jmeter/bin/ ./jmeter.sh -n -t $WORKSPACE/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
    step([$class: 'ArtifactArchiver', artifacts: "**/*.jtl"])
   }
  stage ('Promote build in Artifactory'){
