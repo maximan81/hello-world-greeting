@@ -13,7 +13,7 @@ node('docker-slave') {
    }
   }
   stage ('Integration Test'){
-    sh 'mvn clean verify -Dsurefire.skip=true';*/
+    sh 'mvn clean verify -Dsurefire.skip=true';
     junit '**/target/failsafe-reports/TEST-*.xml'
     step([$class: 'ArtifactArchiver', artifacts: 'target/*.tar'])
  }
