@@ -4,8 +4,9 @@ node('docker-slave') {
  }
  stage('Build & Unit test'){
     sh 'mvn clean verify -DskipITs=true';
-    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml', healthScaleFactor: 1.0])
+    /*step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml', healthScaleFactor: 1.0])*/
     junit '**/target/surefire-reports/TEST-*.xml'
+    step([$class: 'ArtifactArchiver', artifacts: 'target/*.tar'])
  }
   stage('Static Code Analysis'){
    withSonarQubeEnv(installationName: 'Sonarqube'){
@@ -13,9 +14,10 @@ node('docker-slave') {
    }
   }
   stage ('Integration Test'){
-    sh 'mvn clean verify -Dsurefire.skip=true';
-    step([$class: 'JUnitResultArchiver', testResults: '**/target/failsafe-reports/TEST-*.xml', healthScaleFactor: 1.0])
+    sh 'mvn clean verify -Dsurefire.skip=true';*/
+    /*step([$class: 'JUnitResultArchiver', testResults: '**/target/failsafe-reports/TEST-*.xml', healthScaleFactor: 1.0])
     junit '**/target/failsafe-reports/TEST-*.xml'
+    step([$class: 'ArtifactArchiver', artifacts: 'target/*.tar'])
  }
  stage ('Publish'){
    def server = Artifactory.server 'Default Artifactory Server'
