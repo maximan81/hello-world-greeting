@@ -13,7 +13,7 @@ node('docker-slave') {
       sh 'mvn clean verify sonar:sonar -Dsonar.projectName=example-project -Dsonar.projectKey=example-project -Dsonar.projectVersion=$BUILD_NUMBER';
    }
   }
-  stage ('Integration Test '){
+  stage ('Integration Test'){
     sh 'mvn clean verify -Dsurefire.skip=true';
     junit '**/target/failsafe-reports/TEST-*.xml'
     step([$class: 'ArtifactArchiver', artifacts: 'target/*.jar'])
