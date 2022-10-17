@@ -5,6 +5,7 @@ node('docker-slave') {
  stage('Build & Unit test'){
     sh 'mvn clean verify -DskipITs=true';
     junit '**/target/surefire-reports/TEST-*.xml'
+    sh 'ls $WORKSPACE'
     step([$class: 'ArtifactArchiver', artifacts: 'target/*.jar'])
  }
   stage('Static Code Analysis'){
