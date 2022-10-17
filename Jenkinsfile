@@ -5,7 +5,7 @@ node('docker-slave') {
  stage('Build & Unit test'){
     sh 'mvn clean verify -DskipITs=true';
     junit '**/target/surefire-reports/TEST-*.xml'
-    archive 'target/*.jar'
+    archiveArtifacts 'target/*.jar'
  }
   stage('Static Code Analysis'){
    withSonarQubeEnv(installationName: 'Sonarqube'){
@@ -43,7 +43,7 @@ node('docker_pt') {
  }
  stage ('Performance Testing'){
    sh '''cd /opt/jmeter/bin/ ./jmeter.sh -n -t $WORKSPACE/src/pt/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
-    archiveArtifacts aritefacts: '**/*.jtl'
+    archiveArtifacts '**/*.jtl'
   }
  stage ('Promote build in Artifactory'){
    withCredentials([usernameColonPassword(credentialsId:
