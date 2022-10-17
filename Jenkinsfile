@@ -43,7 +43,7 @@ node('docker_pt') {
  }
  stage ('Performance Testing'){
     sh '''cd /opt/jmeter/bin/ ./jmeter.sh -n -t $WORKSPACE/src/pt/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
-    sh "echo '$WORKSPACE/test_report.jtl'"
+    sh "ls $WORKSPACE"
     step([$class: 'ArtifactArchiver', artifacts: '**/*.jtl'])
   }
  stage ('Promote build in Artifactory'){
