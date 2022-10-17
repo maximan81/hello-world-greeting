@@ -42,7 +42,7 @@ node('docker_pt') {
     sh 'cp target/hello-0.0.1.war /home/jenkins/tomcat/webapps/';
  }
  stage ('Performance Testing'){
-    sh '''cd /opt/jmeter/bin/ ./jmeter.sh -n -t $WORKSPACE/src/pt/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
+    sh '''cd /opt/jmeter/bin/ && ./jmeter.sh -n -t $WORKSPACE/src/pt/Hello_World_Test_Plan.jmx -l $WORKSPACE/test_report.jtl''';
     sh "ls $WORKSPACE"
     step([$class: 'ArtifactArchiver', artifacts: '**/*.jtl'])
   }
