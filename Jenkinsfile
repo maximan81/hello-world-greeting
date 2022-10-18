@@ -4,8 +4,8 @@ node('docker-slave') {
  }
  stage('Build & Unit test'){
     sh 'mvn clean verify -DskipITs=true';
+    step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml', healthScaleFactor: 1.0])
     junit '**/target/surefire-reports/TEST-*.xml'
-    step([$class: 'ArtifactArchiver', artifacts: '**/*.jar'])
  }
   stage('Static Code Analysis'){
    withSonarQubeEnv(installationName: 'Sonarqube'){
@@ -14,8 +14,8 @@ node('docker-slave') {
   }
   stage ('Integration Test'){
     sh 'mvn clean verify -Dsurefire.skip=true';
+    step([$class: 'JUnitResultArchiver', testResults: '**/target/failsafe-reports/TEST-*.xml', healthScaleFactor: 1.0])
     junit '**/target/failsafe-reports/TEST-*.xml'
-    step([$class: 'ArtifactArchiver', artifacts: '**/*.jar'])
  }
  stage ('Publish'){
    def server = Artifactory.server 'Default Artifactory Server'
@@ -51,5 +51,20 @@ node('docker_pt') {
       'artifactory-account', variable: 'credentials')]) {
         sh 'curl -u${credentials} -X PUT "http://172.17.0.1:8082/artifactory/api/storage/example-project/ ${BUILD_NUMBER}/hello-0.0.1.war?properties=Performance-Tested=Yes"';
      }
+ }
+}
+node ('production') {
+ stage ('Deploy to Prod'){
+   def server = Artifactory.server 'Default Artifactory Server'
+   def downloadSpec = """{
+      "files": [
+       {
+          "pattern": "example-project/$BUILD_NUMBER/*.zip",
+          "target": "/home/jenkins/tomcat/webapps/",
+          "props": "Performance-Tested=Yes; Integration-Tested=Yes"
+       }
+     ]
+   }"""
+   server.download(downloadSpec)
  }
 }
